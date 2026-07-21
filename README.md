@@ -1,4 +1,4 @@
-# xhs-minitool-copilot
+# xhs-minitool-build-copilot-skill
 
 **小红书小工具 Copilot** —— 先判断一个点子在小工具容器里**能不能做、值不值得做**，再生成合规的可上传产物。
 
@@ -39,12 +39,12 @@
 
 ```bash
 # Claude Code
-git clone https://github.com/XueshiQiao/xhs-minitool-copilot.git \
-  ~/.claude/skills/xhs-minitool-copilot
+git clone https://github.com/XueshiQiao/xhs-minitool-build-copilot-skill.git \
+  ~/.claude/skills/xhs-minitool-build-copilot-skill
 
 # Codex
-git clone https://github.com/XueshiQiao/xhs-minitool-copilot.git \
-  ~/.codex/skills/xhs-minitool-copilot
+git clone https://github.com/XueshiQiao/xhs-minitool-build-copilot-skill.git \
+  ~/.codex/skills/xhs-minitool-build-copilot-skill
 
 # 其他 agent：放进它约定的 skills 目录即可
 ```
