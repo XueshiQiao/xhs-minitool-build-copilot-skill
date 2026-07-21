@@ -8,7 +8,7 @@
 #   ./build-minitool.sh <工具目录> [输出.zip]
 #   ./build-minitool.sh my-tool my-tool.zip
 #
-# 属于 xhs-minitool-skill：https://github.com/XueshiQiao/xhs-minitool-skill
+# 属于 xhs-minitool-copilot：https://github.com/XueshiQiao/xhs-minitool-copilot
 #
 # 校验不通过会直接退出，不会产出一个有问题的包。
 # ---------------------------------------------------------------------------
