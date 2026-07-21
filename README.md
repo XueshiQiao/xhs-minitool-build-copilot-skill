@@ -2,7 +2,7 @@
 
 **小红书小工具 Copilot** —— 先判断一个点子在小工具容器里**能不能做、值不值得做**，再生成合规的可上传产物。
 
-> 版本 `1.0.0+spec.1.2.0` · 对齐小红书官方规范 v1.2.0（快照 2026-07）
+> 版本 `1.2.0` · 对齐小红书官方规范 **v1.2.0**（快照 2026-07）
 
 ---
 
@@ -90,10 +90,15 @@ templates/
 
 ## 版本锚定
 
-版本号形如 `1.0.0+spec.1.2.0`：
+**主版本号与次版本号镜像小红书官方规范的版本，修订号是本 skill 自己的迭代。**
 
-- `1.0.0` —— 本 skill 自己的迭代
-- `+spec.1.2.0` —— 锚定当时对齐的小红书官方规范版本
+| 本 skill 版本 | 含义 |
+|---|---|
+| `1.2.0` | 对齐官方规范 v1.2.x 的第一版 |
+| `1.2.1` `1.2.2` … | 同一份规范下，本 skill 自己的修订 |
+| `1.3.0` | 官方发布 v1.3.x 后跟进的第一版 |
+
+从版本号一眼就能看出它对齐的是哪一版规范。
 
 `references/capability-snapshot.md` 是**版本锁定的快照**，顶部标注了对齐的官方版本与日期。
 
@@ -101,11 +106,40 @@ templates/
 
 1. 下载官方最新 skill：`https://fe-static.xhscdn.com/mini-tool/<版本>/minitool-zip-builder.zip`
 2. 与快照比对差异，只更新 `capability-snapshot.md`
-3. 同步改 `SKILL.md` 里的 `version` 与快照日期
+3. 同步改 `SKILL.md` 里的 `version`（主/次版本跟随官方）与快照日期
 
 其余三份文档（可行性、产品、踩坑）通常不需要动——它们讲的是判断方法和实战经验，不是接口清单。
 
 > 如果快照日期距今超过 3 个月，skill 会先提示去核对官方最新规范。
+
+---
+
+## 发布到小红书 SkillHub
+
+```bash
+npm install -g "https://fe-video-qc.xhscdn.com/fe-platform-file/104101b83221qt9bu7k0653u0hejenq0004pf88k9rpr6a.tgz"
+CLI="$(npm root -g)/@xhs/skillhub-upload/cli/index.mjs"
+
+node "$CLI" whoami                       # 检查授权
+node "$CLI" login --agent                # 未授权时
+
+printf 'submit\n' | node "$CLI" publish "$(pwd)" --agent \
+  --source original --tag 编程开发,效率工具 \
+  --name "小红书小工具 Copilot" \
+  --identifier xhs-minitool-build-copilot-skill
+```
+
+三个必须知道的点：
+
+1. **`skillhub-upload` 命令直接跑会静默退出**。它的入口判断 `import.meta.url === file://${process.argv[1]}`，
+   而 npm 全局安装的是软链接，两个路径不相等，`main()` 根本不执行。必须 `node <真实入口路径>` 调用。
+2. **版本号只接受三段式 semver**，`1.0.0+spec.1.2.0` 这类构建元数据会被拒
+   （`semver must have 3 parts`）。这也是本 skill 采用「主次版本镜像官方规范」方案的原因。
+3. **展示名有长度上限**，`xhs-minitool-build-copilot-skill`（32 字符）会被拒
+   （`名称长度不符合要求`）。用 `--name` 传短展示名，用 `--identifier` 单独锁定 Skill ID。
+
+包内文件类型白名单也比较窄：`LICENSE`、`.gitignore` 这类**无扩展名文件会被判为二进制拒收**，
+所以本仓库用的是 `LICENSE.md` 且不带 `.gitignore`。
 
 ---
 
