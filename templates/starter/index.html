@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<!-- viewport 三个 token 都是容器硬要求，别删 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>小工具</title>
+<style>
+/* ============================================================
+   起始模板 —— 已满足容器的全部硬要求：
+   · 唯一入口 index.html，脚本外置（CSP 禁内联 script 与 onclick）
+   · 无任何外部资源引用（外部 CDN 一律加载不到）
+   · 安全区一律 env(..., 0px) 带 fallback（PC 模拟器为 0，真机为真实值）
+   · 样式可以内联，无需外置
+   ============================================================ */
+
+:root{
+  --paper:#FFFFFF;
+  --wash:#F7F6F4;
+  --ink:#17171A;
+  --ink-2:#6E6E76;
+  --ink-3:#A8A8B0;
+  --line:#ECEBE8;
+  --accent:#FF2442;
+  --r-lg:16px;
+  --r-md:12px;
+  --font-ui:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",system-ui,sans-serif;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+
+body{
+  background:var(--wash);
+  color:var(--ink);
+  font-family:var(--font-ui);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;      /* 长按菜单本就被容器禁用，这里再保险一层 */
+  overscroll-behavior-y:contain;
+}
+
+button{
+  font-family:inherit;font-size:inherit;color:inherit;
+  border:0;background:none;padding:0;cursor:pointer;
+  touch-action:manipulation;       /* 去掉 300ms 点击延迟与双击缩放 */
+}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+.app{
+  max-width:520px;
+  margin:0 auto;
+  /* 安全区必须带 fallback */
+  padding:calc(12px + env(safe-area-inset-top, 0px)) 16px
+          calc(24px + env(safe-area-inset-bottom, 0px));
+}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:16px;}
+.bar__title{margin:0;font-size:20px;font-weight:700;}
+
+.btn{
+  min-height:44px;                  /* 命中区不小于 44px */
+  padding:0 18px;
+  border-radius:999px;
+  background:var(--accent);
+  color:#fff;
+  font-weight:600;
+}
+.btn:active{opacity:.85;}
+
+.card{
+  background:var(--paper);
+  border-radius:var(--r-lg);
+  padding:18px;
+  margin-bottom:12px;
+}
+
+.note{text-align:center;font-size:11.5px;color:var(--ink-3);margin:14px 0 0;line-height:1.6;}
+
+/* Toast —— alert() 虽然可用但会打断操作，页内提示体验更好 */
+.toast{
+  position:fixed;left:50%;
+  bottom:calc(28px + env(safe-area-inset-bottom, 0px));
+  transform:translate(-50%,14px);
+  background:rgba(23,23,26,.93);color:#fff;
+  font-size:13.5px;font-weight:600;
+  padding:11px 19px;border-radius:999px;
+  z-index:80;opacity:0;pointer-events:none;
+  transition:opacity .22s,transform .22s;
+  max-width:calc(100vw - 48px);text-align:center;
+}
+.toast.is-open{opacity:1;transform:translate(-50%,0);}
+
+[hidden]{display:none !important;}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="bar">
+    <h1 class="bar__title">小工具</h1>
+    <button class="btn" id="btnAct" type="button">点一下</button>
+  </header>
+
+  <section class="card">
+    <p id="output">还没有记录</p>
+  </section>
+
+  <p class="note" id="note"></p>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<!-- 脚本必须外置：容器 CSP 的 script-src 不含 unsafe-inline -->
+<script src="./app.js"></script>
+</body>
+</html>
